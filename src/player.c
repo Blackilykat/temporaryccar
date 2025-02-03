@@ -6,8 +6,9 @@
 #define CAR_LENGTH 15
 
 #define ACCELERATION 5.0
-#define FRICTION 2.0
 #define TURNING_SPEED 180.0
+#define FRICTION 1.0
+#define FRICTION_SPEED_MULTIPLIER 5.0
 
 typedef struct Velocity {
 	float magnitude;
@@ -34,7 +35,13 @@ void paint_car(Car *car) {
 
 void tick_car(Car *car, float deltaTime) {
 	if(car->velocity.magnitude > 0) {
-		car->velocity.magnitude -= FRICTION * deltaTime;
+		car->velocity.magnitude -= FRICTION * deltaTime * (1 + car->velocity.magnitude / FRICTION_SPEED_MULTIPLIER);
+		if(car->velocity.magnitude < 0.0) car->velocity.magnitude = 0.0;
+	}
+
+	if(car->velocity.magnitude < 0) {
+		car->velocity.magnitude += FRICTION * deltaTime * (1 + car->velocity.magnitude / FRICTION_SPEED_MULTIPLIER);
+		if(car->velocity.magnitude > 0.0) car->velocity.magnitude = 0.0;
 	}
 
 	float angle_rad = PI * (car->rotation / 180);
@@ -53,10 +60,12 @@ void tick_player(Car *car, Input input, float deltaTime) {
 		// TODO: different backwards speed
 		car->velocity.magnitude -= ACCELERATION * deltaTime;
 	}
+	char rotationMultiplier = 1;
+	if(car->velocity.magnitude < 0) rotationMultiplier = -1;
 	if(input.right) {
-		car->rotation -= TURNING_SPEED * deltaTime;
+		car->rotation += TURNING_SPEED * deltaTime * rotationMultiplier;
 	}
 	if(input.left) {
-		car->rotation += TURNING_SPEED * deltaTime;
+		car->rotation -= TURNING_SPEED * deltaTime * rotationMultiplier;
 	}
 }
