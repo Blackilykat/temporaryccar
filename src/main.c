@@ -21,7 +21,7 @@ int main() {
 	map_add_wall(&map, &(Wall){{200, 200}, {400, 200}});
 	map_add_wall(&map, &(Wall){{400, 200}, {400, 300}});
 
-	Car car = {{500, 500}, {0, 0}, 45, RED};
+	Car car = {{500, 500}, 0.0, 45, RED};
 
 	while(!WindowShouldClose()) {
 		BeginDrawing();

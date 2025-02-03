@@ -13,14 +13,9 @@
 #define FRICTION 20.0
 #define FRICTION_SPEED_MULTIPLIER 75.0
 
-typedef struct Velocity {
-	float magnitude;
-	float direction;
-} Velocity;
-
 typedef struct Car {
 	Position position;
-	Velocity velocity;
+	float velocity;
 	float rotation;
 	Color color;
 } Car;
@@ -37,19 +32,19 @@ void paint_car(Car *car) {
 }
 
 void tick_car(Car *car, float deltaTime) {
-	if(car->velocity.magnitude > 0) {
-		car->velocity.magnitude -= FRICTION * deltaTime * (1 + car->velocity.magnitude / FRICTION_SPEED_MULTIPLIER);
-		if(car->velocity.magnitude < 0.0) car->velocity.magnitude = 0.0;
+	if(car->velocity > 0) {
+		car->velocity -= FRICTION * deltaTime * (1 + car->velocity / FRICTION_SPEED_MULTIPLIER);
+		if(car->velocity < 0.0) car->velocity = 0.0;
 	}
 
-	if(car->velocity.magnitude < 0) {
-		car->velocity.magnitude += FRICTION * deltaTime * (1 - car->velocity.magnitude / FRICTION_SPEED_MULTIPLIER);
-		if(car->velocity.magnitude > 0.0) car->velocity.magnitude = 0.0;
+	if(car->velocity < 0) {
+		car->velocity += FRICTION * deltaTime * (1 - car->velocity / FRICTION_SPEED_MULTIPLIER);
+		if(car->velocity > 0.0) car->velocity = 0.0;
 	}
 
 	float angle_rad = PI * (car->rotation / 180);
-	float mov_x = cos(angle_rad) * car->velocity.magnitude * deltaTime;
-	float mov_y = sin(angle_rad) * car->velocity.magnitude * deltaTime;
+	float mov_x = cos(angle_rad) * car->velocity * deltaTime;
+	float mov_y = sin(angle_rad) * car->velocity * deltaTime;
 
 	car->position.x += mov_x;
 	car->position.y += mov_y;
@@ -58,14 +53,14 @@ void tick_car(Car *car, float deltaTime) {
 
 void tick_player(Car *car, Input input, float deltaTime) {
 	if(input.forwards) {
-		car->velocity.magnitude += ACCELERATION * deltaTime;
+		car->velocity += ACCELERATION * deltaTime;
 	}
 	if(input.backwards) {
 		// TODO: different backwards speed
-		car->velocity.magnitude -= ACCELERATION * deltaTime;
+		car->velocity -= ACCELERATION * deltaTime;
 	}
 	char rotationMultiplier = 1;
-	if(car->velocity.magnitude < 0) rotationMultiplier = -1;
+	if(car->velocity < 0) rotationMultiplier = -1;
 	if(input.right) {
 		car->rotation += TURNING_SPEED * deltaTime * rotationMultiplier;
 	}
