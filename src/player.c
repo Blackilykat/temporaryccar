@@ -1,3 +1,6 @@
+
+#pragma once
+
 #include "raylib.h"
 #include "geometry.c"
 #include <math.h>
@@ -5,10 +8,10 @@
 #define CAR_WIDTH 10
 #define CAR_LENGTH 15
 
-#define ACCELERATION 5.0
+#define ACCELERATION 100.0
 #define TURNING_SPEED 180.0
-#define FRICTION 1.0
-#define FRICTION_SPEED_MULTIPLIER 5.0
+#define FRICTION 20.0
+#define FRICTION_SPEED_MULTIPLIER 75.0
 
 typedef struct Velocity {
 	float magnitude;
@@ -40,17 +43,18 @@ void tick_car(Car *car, float deltaTime) {
 	}
 
 	if(car->velocity.magnitude < 0) {
-		car->velocity.magnitude += FRICTION * deltaTime * (1 + car->velocity.magnitude / FRICTION_SPEED_MULTIPLIER);
+		car->velocity.magnitude += FRICTION * deltaTime * (1 - car->velocity.magnitude / FRICTION_SPEED_MULTIPLIER);
 		if(car->velocity.magnitude > 0.0) car->velocity.magnitude = 0.0;
 	}
 
 	float angle_rad = PI * (car->rotation / 180);
-	float mov_x = cos(angle_rad) * car->velocity.magnitude;
-	float mov_y = sin(angle_rad) * car->velocity.magnitude;
+	float mov_x = cos(angle_rad) * car->velocity.magnitude * deltaTime;
+	float mov_y = sin(angle_rad) * car->velocity.magnitude * deltaTime;
 
 	car->position.x += mov_x;
 	car->position.y += mov_y;
 }
+
 
 void tick_player(Car *car, Input input, float deltaTime) {
 	if(input.forwards) {
