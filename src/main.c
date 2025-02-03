@@ -21,6 +21,8 @@ int main() {
 	map_add_wall(&map, &(Wall){{200, 200}, {400, 200}});
 	map_add_wall(&map, &(Wall){{400, 200}, {400, 300}});
 
+	Car car = {{500, 500}, {0, 0}, 45, RED};
+
 	while(!WindowShouldClose()) {
 		BeginDrawing();
 
@@ -28,18 +30,20 @@ int main() {
 		secondsPassed += deltaTime;
 
 
+		tick_player(&car, (Input){
+				IsKeyDown(KEY_W),
+				IsKeyDown(KEY_S),
+				IsKeyDown(KEY_A),
+				IsKeyDown(KEY_D),
+			}, deltaTime);
+		tick_car(&car, deltaTime);
+		
 
-
-
-		WallNode *cursor = map.firstWall;
-		while(cursor != NULL) {
-			DrawLine(cursor->wall.start.x, cursor->wall.start.y, cursor->wall.end.x, cursor->wall.end.y, BLUE);
-			cursor = cursor->next;
-		}
 
 		ClearBackground(BLACK);
 
-		DrawRectanglePro((Rectangle){500, 600, 100, 200}, (Vector2){50, 100}, secondsPassed * 10, RAYWHITE);
+		paint_car(&car);
+		paint_walls(&map);
 
 		EndDrawing();
 	}

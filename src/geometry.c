@@ -1,8 +1,8 @@
 #pragma once
 
 typedef struct Position {
-	int x;
-	int y;
+	float x;
+	float y;
 } Position;
 
 

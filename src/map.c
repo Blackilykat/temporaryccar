@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "geometry.c"
+#include "raylib.h"
 
 typedef struct Wall {
 	Position start;
@@ -36,3 +37,10 @@ void map_add_wall(RaceMap *map, Wall *wall) {
 	}
 }
 
+void paint_walls(RaceMap *map) {
+		WallNode *cursor = map->firstWall;
+		while(cursor != NULL) {
+			DrawLine(cursor->wall.start.x, cursor->wall.start.y, cursor->wall.end.x, cursor->wall.end.y, BLUE);
+			cursor = cursor->next;
+		}
+}

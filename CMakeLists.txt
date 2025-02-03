@@ -14,4 +14,4 @@ project(ccar C)
 
 add_executable(ccar src/main.c)
 
-target_link_libraries(ccar raylib)
+target_link_libraries(ccar raylib m)
