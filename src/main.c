@@ -17,7 +17,6 @@ int main() {
 	float secondsPassed = 0.0;
 
 	RaceMap map = {{0, 0}, NULL, NULL};
-	map_add_wall(&map, &(Wall){{400, 200}, {400, 300}});
 
 	char placingWall = false;
 	Position placingWallStart = {};
@@ -51,10 +50,9 @@ int main() {
 		}
 		if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
 			placingWall = false;
-			Wall *wall = malloc(sizeof(Wall));
-			wall->start = placingWallStart;
-			wall->end = placingWallEnd;
-			map_add_wall(&map, wall);
+			// it copies it in map_add_wall so it's fine to not malloc here
+			Wall wall = {placingWallStart, placingWallEnd};
+			map_add_wall(&map, &wall);
 		}
 
 		ClearBackground(BLACK);
@@ -67,6 +65,15 @@ int main() {
 
 		EndDrawing();
 	}
+
+	WallNode *cursor = map.firstWall;
+	while(cursor != NULL) {
+		WallNode *prev = cursor;
+		cursor = cursor->next;
+		free(prev);
+	}
+
+
 
 	CloseWindow();
 }
