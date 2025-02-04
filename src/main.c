@@ -35,8 +35,8 @@ int main() {
 				IsKeyDown(KEY_S),
 				IsKeyDown(KEY_A),
 				IsKeyDown(KEY_D),
-			}, deltaTime);
-		tick_car(&car, deltaTime);
+			}, deltaTime, &map);
+		tick_car(&car, deltaTime, &map);
 		
 
 
