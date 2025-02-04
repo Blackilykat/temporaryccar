@@ -17,9 +17,11 @@ int main() {
 	float secondsPassed = 0.0;
 
 	RaceMap map = {{0, 0}, NULL, NULL};
-	map_add_wall(&map, &(Wall){{100, 100}, {200, 200}});
-	map_add_wall(&map, &(Wall){{200, 200}, {400, 200}});
 	map_add_wall(&map, &(Wall){{400, 200}, {400, 300}});
+
+	char placingWall = false;
+	Position placingWallStart = {};
+	Position placingWallEnd = {};
 
 	Car car = {{500, 500}, 0.0, 45, RED};
 
@@ -37,13 +39,31 @@ int main() {
 				IsKeyDown(KEY_D),
 			}, deltaTime, &map);
 		tick_car(&car, deltaTime, &map);
-		
 
+		if(IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+			placingWall = true;
+			placingWallStart.x = GetMouseX();
+			placingWallStart.y = GetMouseY();
+		}
+		if(placingWall) {
+			placingWallEnd.x = GetMouseX();
+			placingWallEnd.y = GetMouseY();
+		}
+		if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+			placingWall = false;
+			Wall *wall = malloc(sizeof(Wall));
+			wall->start = placingWallStart;
+			wall->end = placingWallEnd;
+			map_add_wall(&map, wall);
+		}
 
 		ClearBackground(BLACK);
 
 		paint_car(&car);
 		paint_walls(&map);
+		if(placingWall) {
+			DrawLine(placingWallStart.x, placingWallStart.y, placingWallEnd.x, placingWallEnd.y, GREEN);
+		}
 
 		EndDrawing();
 	}
