@@ -17,6 +17,19 @@ int main() {
 	float secondsPassed = 0.0;
 
 	RaceMap map = {{0, 0}, NULL, NULL};
+	
+	// weird slightly offset numbers are necessary for all walls to be visible
+	Wall northwall = {{1, 0}, {WINDOW_WIDTH, 0}};
+	map_add_wall(&map, northwall);
+
+	Wall eastwall = {{WINDOW_WIDTH, 0}, {WINDOW_WIDTH, WINDOW_HEIGHT}};
+	map_add_wall(&map, eastwall);
+	
+	Wall southwall = {{WINDOW_WIDTH, WINDOW_HEIGHT-1}, {1, WINDOW_HEIGHT-1}};
+	map_add_wall(&map, southwall);
+
+	Wall westwall = {{1, WINDOW_HEIGHT}, {1, 0}};
+	map_add_wall(&map, westwall);
 
 	char placingWall = false;
 	Position placingWallStart = {};
@@ -50,9 +63,8 @@ int main() {
 		}
 		if(IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
 			placingWall = false;
-			// it copies it in map_add_wall so it's fine to not malloc here
 			Wall wall = {placingWallStart, placingWallEnd};
-			map_add_wall(&map, &wall);
+			map_add_wall(&map, wall);
 		}
 
 		ClearBackground(BLACK);

@@ -23,9 +23,9 @@ typedef struct RaceMap {
 } RaceMap;
 
 
-void map_add_wall(RaceMap *map, Wall *wall) {
+void map_add_wall(RaceMap *map, Wall wall) {
 	WallNode *node = malloc(sizeof(WallNode));
-	node->wall = *wall;
+	node->wall = wall;
 	if(map->lastWall != NULL) {
 		map->lastWall->next = node;
 		node->prev = map->lastWall; 
